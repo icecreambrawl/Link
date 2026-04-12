@@ -105,7 +105,7 @@
             background: #ffefb9;
         }
 
-        /* правая колонка: кнопки + гемы */
+        /* правая колонка: кнопки + ошибки */
         .buttons-area {
             flex: 2;
             min-width: 260px;
@@ -179,39 +179,6 @@
             margin-top: 0.5rem;
         }
 
-        /* секция с гемами картинка (декоративный блок) */
-        .gems-preview {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #FFF2CC;
-            border-radius: 2.5rem;
-            padding: 1rem 1rem 0.8rem;
-            margin-top: 0.2rem;
-        }
-
-        .gems-img {
-            max-width: 120px;
-            width: 100%;
-            margin-bottom: 0.3rem;
-        }
-
-        .gems-img img {
-            width: 100%;
-            border-radius: 2rem;
-            background: #FFE7A3;
-            padding: 6px;
-        }
-
-        .gems-caption {
-            font-weight: 700;
-            color: #B45116;
-            background: rgba(255, 235, 150, 0.9);
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            font-size: 0.85rem;
-        }
-
         /* адаптивность */
         @media (max-width: 780px) {
             .content-core {
@@ -254,7 +221,7 @@
 <body>
 
 <div class="glass-panel">
-    <!-- ЗАГОЛОВОК НА ФОНЕ ПРИ ВХОДЕ -->
+    <!-- ЗАГОЛОВОК -->
     <div class="hero-banner">
         <h1>ICE CREAM BRAWL 2 - ПРИВАТНЫЙ СЕРВЕР BRAWL STARS!</h1>
         <div class="sub">🍦 Официальный сайт 🍦</div>
@@ -268,14 +235,14 @@
             </div>
         </div>
 
-        <!-- Правая часть с кнопками -->
+        <!-- Правая часть с кнопками (удалён блок .gems-preview с картинкой gem_price.png) -->
         <div class="buttons-area">
             <!-- КНОПКА СКАЧАТЬ -->
             <button id="downloadBtn" class="btn-white">
                 <span>📁 СКАЧАТЬ</span>
             </button>
 
-            <!-- КНОПКА КАНАЛ В ТЕЛЕГРАММ с иконкой и ссылкой https://t.me/IceCreamBrawl2 -->
+            <!-- КНОПКА КАНАЛ В ТЕЛЕГРАММ -->
             <button id="telegramBtn" class="btn-white">
                 <span>
                     <img class="btn-icon" src="img/telegram_icon.png" alt="Telegram" onerror="this.src='https://placehold.co/48x48/0088cc/white?text=TG'; this.onerror=null;">
@@ -283,15 +250,7 @@
                 </span>
             </button>
 
-            <!-- Блок с гемами: картинка gem_price.png (превью) теперь просто декоративный -->
-            <div class="gems-preview">
-                <div class="gems-img">
-                    <img src="img/gem_price.png" alt="Цены на гемы" onerror="this.src='https://placehold.co/200x100/f5b042/3e2a1a?text=GEMS+PRICE'; this.onerror=null;">
-                </div>
-                <div class="gems-caption">💎БЕСПЛАТНЫЕ ГЕМЫ💎</div>
-            </div>
-            
-            <!-- НОВАЯ КНОПКА: 💎ГЕМЫ💎 (вместо прайс листа) -->
+            <!-- КНОПКА ГЕМЫ (оставлена, как и требовалось, но без блока с картинкой) -->
             <button id="gemsErrorBtn" class="btn-white">
                 <span>💎 ГЕМЫ 💎</span>
             </button>
@@ -309,7 +268,7 @@
     // Элементы управления
     const downloadBtn = document.getElementById('downloadBtn');
     const telegramBtn = document.getElementById('telegramBtn');
-    const gemsErrorBtn = document.getElementById('gemsErrorBtn');  // кнопка "ГЕМЫ" с ошибкой
+    const gemsErrorBtn = document.getElementById('gemsErrorBtn');
     const errorContainer = document.getElementById('errorContainer');
 
     // Функция показа красного прямоугольника с текстом ошибки
@@ -320,7 +279,7 @@
         errorDiv.textContent = message;
         errorContainer.appendChild(errorDiv);
         
-        // Автоматическая плавная прокрутка до блока с ошибкой, чтобы пользователь точно увидел сообщение
+        // Плавная прокрутка до сообщения об ошибке, чтобы пользователь его заметил
         errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
@@ -329,43 +288,26 @@
         errorContainer.innerHTML = '';
     }
 
-    // 1. СКАЧАТЬ -> сообщение об ошибке (сервер не вышел)
+    // 1. СКАЧАТЬ -> сообщение об ошибке (сервер ещё не вышел)
     downloadBtn.addEventListener('click', () => {
         showError('ERROR: Сервер ещё не вышел');
     });
 
-    // 2. КАНАЛ В ТЕЛЕГРАММ -> переход по указанной ссылке (открывается в новой вкладке)
-    //    При успешном действии очищаем предыдущие ошибки для удобства пользователя
+    // 2. КАНАЛ В ТЕЛЕГРАММ -> переход по ссылке https://t.me/IceCreamBrawl2
     telegramBtn.addEventListener('click', () => {
         const telegramChannelUrl = 'https://t.me/IceCreamBrawl2';
         window.open(telegramChannelUrl, '_blank', 'noopener noreferrer');
-        clearErrors(); // убираем любые старые сообщения об ошибках, так как действие выполнено корректно
+        clearErrors(); // убираем старые ошибки, так как действие успешно
     });
 
-    // 3. КНОПКА "💎 ГЕМЫ 💎" -> строгая ошибка с требуемым текстом: "ERROR: Сейчас гемы получить нельзя"
+    // 3. КНОПКА ГЕМЫ -> ошибка с нужным текстом
     gemsErrorBtn.addEventListener('click', () => {
         showError('ERROR: Сейчас гемы получить нельзя');
     });
 
-    // Дополнительная эстетика: при клике на любую из кнопок, которая вызывает ошибку,
-    // предыдущая ошибка заменяется новой (это корректно).
-    // Также добавим небольшую деталь: если пользователь нажимает на "ГЕМЫ" несколько раз подряд,
-    // сообщение будет обновляться, но оставаться таким же — это нормально.
-    
-    // Для чистоты интерфейса: если пользователь кликнул на "СКАЧАТЬ", показывается одна ошибка,
-    // а если следом кликнет на "ГЕМЫ" — ошибка изменится на соответствующую.
-    
-    // Убеждаемся, что никаких модальных окон, прайс-листов или лишних попапов нет — они полностью удалены.
-    // Только кнопки и блок с ошибками, что полностью соответствует заданию.
-    
-    // Также для улучшения пользовательского опыта добавим возможность скрыть ошибку при повторном нажатии на ту же кнопку?
-    // По заданию не требуется, но ошибка заменяется на новую (так и остается). Этого достаточно.
-    
-    // Для уверенности, что текст ошибки в точности совпадает с заданием: "ERROR: Сейчас гемы получить нельзя"
-    // Проверим: в showError передаётся именно эта строка.
-    
-    // Также добавим лёгкую анимацию появления ошибки (CSS transition уже есть у блока)
-    console.log('Ice Cream Brawl 2 — кнопка ГЕМЫ выводит ошибку: "ERROR: Сейчас гемы получить нельзя"');
+    // Всё: декоративный блок с картинкой gem_price.png и надписью "БЕСПЛАТНЫЕ ГЕМЫ" полностью удалён.
+    // Кнопка "ГЕМЫ" осталась на месте и исправно показывает ошибку.
+    console.log('Ice Cream Brawl 2 — удалён только блок с gem_price.png. Кнопка ГЕМЫ и остальные кнопки работают корректно.');
 </script>
 </body>
 </html>
