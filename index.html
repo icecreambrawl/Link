@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Ice Cream Brawl 2 — приватный сервер Brawl Stars</title>
+    <title>Ice Cream Brawl 2 — Brawl Stars с оффлайн боями!</title>
     <style>
         * {
             margin: 0;
@@ -203,10 +203,11 @@
             background: #FADB67;
             text-align: center;
             padding: 1rem;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 700;
             color: #7A4512;
-            font-weight: 500;
             border-top: 1px solid #FFE087;
+            letter-spacing: 0.3px;
         }
 
         button {
@@ -235,7 +236,7 @@
             </div>
         </div>
 
-        <!-- Правая часть с кнопками (удалён блок .gems-preview с картинкой gem_price.png) -->
+        <!-- Правая часть с кнопками (декоративный блок с gem_price.png полностью удалён) -->
         <div class="buttons-area">
             <!-- КНОПКА СКАЧАТЬ -->
             <button id="downloadBtn" class="btn-white">
@@ -250,7 +251,7 @@
                 </span>
             </button>
 
-            <!-- КНОПКА ГЕМЫ (оставлена, как и требовалось, но без блока с картинкой) -->
+            <!-- КНОПКА ГЕМЫ (оставлена, как и требовалось) -->
             <button id="gemsErrorBtn" class="btn-white">
                 <span>💎 ГЕМЫ 💎</span>
             </button>
@@ -260,7 +261,7 @@
         </div>
     </div>
     <div class="footer-note">
-        🍦 Ice Cream Brawl 2 — старая версия Brawl Stars с оффлайн боями! 🍦
+        🍦 Ice Cream Brawl 2 - Brawl Stars с оффлайн боями! 🍦
     </div>
 </div>
 
@@ -305,9 +306,8 @@
         showError('ERROR: Сейчас гемы получить нельзя');
     });
 
-    // Всё: декоративный блок с картинкой gem_price.png и надписью "БЕСПЛАТНЫЕ ГЕМЫ" полностью удалён.
-    // Кнопка "ГЕМЫ" осталась на месте и исправно показывает ошибку.
-    console.log('Ice Cream Brawl 2 — удалён только блок с gem_price.png. Кнопка ГЕМЫ и остальные кнопки работают корректно.');
+    // Текст в футере обновлён на "Ice Cream Brawl 2 - Brawl Stars с оффлайн боями!"
+    console.log('Ice Cream Brawl 2 — обновлённый слоган: Brawl Stars с оффлайн боями!');
 </script>
 </body>
 </html>
