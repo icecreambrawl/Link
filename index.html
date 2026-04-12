@@ -212,6 +212,111 @@
             font-size: 0.85rem;
         }
 
+        /* МОДАЛЬНОЕ ОКНО ДЛЯ ПРАЙСА ГЕМОВ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-container {
+            background: #FFF6E0;
+            border-radius: 3rem;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: auto;
+            padding: 1.8rem 1.5rem 2rem 1.5rem;
+            box-shadow: 0 30px 40px rgba(0, 0, 0, 0.4), 0 0 0 6px #FFCF7A;
+            text-align: center;
+            position: relative;
+            animation: modalPop 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        @keyframes modalPop {
+            from {
+                transform: scale(0.92);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-title {
+            font-size: 1.9rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #C26F1E, #9B4E0E);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .modal-title span {
+            font-size: 2rem;
+        }
+
+        .modal-image {
+            background: #FFE3A3;
+            border-radius: 2rem;
+            padding: 1rem;
+            max-width: 100%;
+            box-shadow: inset 0 0 0 2px white, 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-image img {
+            max-width: 100%;
+            max-height: 55vh;
+            border-radius: 1.5rem;
+            display: block;
+            object-fit: contain;
+            background: #FBD982;
+        }
+
+        .modal-close {
+            background: #F5B642;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #442100;
+            cursor: pointer;
+            transition: 0.1s linear;
+            margin-top: 0.5rem;
+            box-shadow: 0 4px 0 #B4631A;
+            font-family: inherit;
+        }
+
+        .modal-close:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #B4631A;
+        }
+
         /* адаптивность */
         @media (max-width: 780px) {
             .content-core {
@@ -228,6 +333,9 @@
             }
             .hero-banner {
                 padding: 1.8rem 1rem;
+            }
+            .modal-title {
+                font-size: 1.4rem;
             }
         }
 
@@ -283,19 +391,20 @@
                 </span>
             </button>
 
-            <!-- Блок с гемами: картинка gem_price.png -->
+            <!-- Блок с гемами: картинка gem_price.png (превью) -->
             <div class="gems-preview">
                 <div class="gems-img">
                     <img src="img/gem_price.png" alt="Цены на гемы" onerror="this.src='https://placehold.co/200x100/f5b042/3e2a1a?text=GEMS+PRICE'; this.onerror=null;">
                 </div>
                 <div class="gems-caption">💎БЕСПЛАТНЫЕ ГЕМЫ💎</div>
             </div>
-            <!-- Кнопка ГЕМЫ -->
-            <button id="gemsBtn" class="btn-white">
-                <span>💎 ГЕМЫ💎 </span>
+            
+            <!-- НОВАЯ КНОПКА: ПРАЙС ГЕМОВ (заменили старую "ГЕМЫ") -->
+            <button id="priceGemsBtn" class="btn-white">
+                <span>🍦 ПРАЙС ГЕМОВ 🍦</span>
             </button>
 
-            <!-- Контейнер для красных сообщений об ошибках -->
+            <!-- Контейнер для красных сообщений об ошибках (только для скачать, остальное работает по новому) -->
             <div id="errorContainer" class="error-area"></div>
         </div>
     </div>
@@ -304,14 +413,37 @@
     </div>
 </div>
 
+<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОТОБРАЖЕНИЯ ПРАЙСА ГЕМОВ + ТЕКСТ "Цены на гемы за валюту Котики 😼" -->
+<div id="gemsModal" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-title">
+            <span>😼</span> ПРАЙС ГЕМОВ <span>😼</span>
+        </div>
+        <div class="modal-image">
+            <!-- Картинка gem_price.png открывается в большом размере -->
+            <img id="modalPriceImg" src="img/gem_price.png" alt="Прайс гемов" onerror="this.src='https://placehold.co/700x400/f5b042/3e2a1a?text=PRICE+LIST+FOR+GEMS'; this.onerror=null;">
+        </div>
+        <!-- Текст с котиками и валютой -->
+        <div style="font-size: 1.5rem; font-weight: 700; background: #FFE2A4; padding: 0.4rem 1.2rem; border-radius: 50px; color: #A15515;">
+            🍨 Цены на гемы за валюту Котики 😼
+        </div>
+        <button class="modal-close" id="closeModalBtn">ЗАКРЫТЬ</button>
+    </div>
+</div>
+
 <script>
     // Элементы управления
     const downloadBtn = document.getElementById('downloadBtn');
     const telegramBtn = document.getElementById('telegramBtn');
-    const gemsBtn = document.getElementById('gemsBtn');
+    const priceGemsBtn = document.getElementById('priceGemsBtn');  // новая кнопка ПРАЙС ГЕМОВ
     const errorContainer = document.getElementById('errorContainer');
 
-    // Функция показа красного прямоугольника с текстом ошибки
+    // Модальное окно и его элементы
+    const gemsModal = document.getElementById('gemsModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modalPriceImg = document.getElementById('modalPriceImg');
+
+    // Функция показа красного прямоугольника с текстом ошибки (только для ошибок, например СКАЧАТЬ)
     function showError(message) {
         errorContainer.innerHTML = '';
         const errorDiv = document.createElement('div');
@@ -320,22 +452,102 @@
         errorContainer.appendChild(errorDiv);
     }
 
-    // 1. СКАЧАТЬ -> сообщение об ошибке
+    // Функция открытия модального окна с прайсом гемов
+    function openPriceModal() {
+        // Убедимся, что картинка актуальная (на случай динамической замены, но она и так прописана в src)
+        // Дополнительно проверим, если изображение не загрузилось — подставим плейсхолдер
+        if (!modalPriceImg.complete || modalPriceImg.naturalWidth === 0) {
+            // Если изображение не загрузилось, ставим fallback, но src уже содержит fallback через onerror.
+            // Просто подстраховка
+            modalPriceImg.onerror = function() {
+                this.src = 'https://placehold.co/700x400/f5b042/3e2a1a?text=GEMS+PRICE+LIST';
+            };
+        }
+        gemsModal.classList.add('active');
+        // блокируем прокрутку страницы пока открыто модальное окно (для удобства)
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Функция закрытия модального окна
+    function closePriceModal() {
+        gemsModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // 1. СКАЧАТЬ -> сообщение об ошибке (как было)
     downloadBtn.addEventListener('click', () => {
         showError('ERROR: Сервер ещё не вышел');
     });
 
     // 2. КАНАЛ В ТЕЛЕГРАММ -> переход по указанной ссылке (открывается в новой вкладке)
     telegramBtn.addEventListener('click', () => {
-        // Используем актуальную ссылку из задания
         const telegramChannelUrl = 'https://t.me/IceCreamBrawl2';
         window.open(telegramChannelUrl, '_blank', 'noopener noreferrer');
     });
 
-    // 3. ГЕМЫ -> сообщение об ошибке
-    gemsBtn.addEventListener('click', () => {
-        showError('ERROR: Пока что гемы получить нельзя');
+    // 3. НОВАЯ КНОПКА "ПРАЙС ГЕМОВ" -> открытие модального окна с увеличенной картинкой gem_price.png
+    //    и текстом "Цены на гемы за валюту Котики 😼"
+    priceGemsBtn.addEventListener('click', () => {
+        // Очищаем красное поле ошибок, если там было что-то от предыдущих нажатий (необязательно, но аккуратно)
+        // Чтобы не сбивало с толку, просто убираем предыдущие ошибки, т.к. это действие успешное
+        if (errorContainer.innerHTML !== '') {
+            errorContainer.innerHTML = '';  // очищаем предыдущие ошибки, когда открываем прайс (чтобы не мешалось)
+        }
+        openPriceModal();
     });
+
+    // Закрытие модального окна по кнопке "ЗАКРЫТЬ"
+    closeModalBtn.addEventListener('click', closePriceModal);
+
+    // Закрытие модального окна при клике на фон (overlay)
+    gemsModal.addEventListener('click', (e) => {
+        // если кликнули именно по фону (overlay), а не по контейнеру с модалкой
+        if (e.target === gemsModal) {
+            closePriceModal();
+        }
+    });
+
+    // Закрытие по клавише Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && gemsModal.classList.contains('active')) {
+            closePriceModal();
+        }
+    });
+
+    // Небольшое улучшение: если картинка внутри модалки не загрузилась, то fallback сохраняет читаемость.
+    // Дополнительно для изображения в модалке добавляем onerror, если вдруг не сработает глобально.
+    modalPriceImg.onerror = function() {
+        this.src = 'https://placehold.co/700x400/f5b042/3e2a1a?text=PRICE+LIST+%7C+GEMS+FOR+KOTIKI';
+        this.alt = 'Прайс гемов временно недоступен';
+    };
+    
+    // Для изображения в превью (gems-preview) уже есть onerror, но дублировать не нужно.
+    // Но ради уверенности, что модальная картинка получит корректный источник, используем тот же путь.
+    // На всякий случай, если src у модальной картинки не совпадает с оригиналом — прописываем явно.
+    // Но исходно в HTML модалки src="img/gem_price.png" — это идентично тому, что в превью. 
+    // Все ок, при открытии будет большая версия этой же картинки (растянута в рамках modal-image).
+    // Для лучшего восприятия можно предложить юзеру, что это увеличенный прайс-лист.
+    
+    // Дополнительно: при повторном открытии модалки убеждаемся, что overflow заблокирован и всё плавно.
+    // Также, чтобы не было конфликта с остальными ошибками, если нажать "ПРАЙС ГЕМОВ" после ошибки — ошибка исчезнет.
+    // Это сделано выше (очистка errorContainer).
+    
+    // Также добавим небольшую анимацию на кнопки, но это не обязательно. Сайт сохранил все стили.
+    // Модальное окно полностью соответствует теме: желто-оранжевая гамма, плавное появление.
+    // Текст "Цены на гемы за валюту Котики 😼" выполнен жирным, в отдельной плашке.
+    
+    // Для гарантии, что изображение gem_price.png в модалке будет отображаться с максимальной шириной,
+    // стили уже заданы .modal-image img { max-height: 55vh; object-fit: contain; } -> картинка останется пропорциональной.
+    
+    // Убедимся, что старая кнопка "ГЕМЫ" полностью заменена новой "ПРАЙС ГЕМОВ" и нет двойного функционала.
+    // Старая кнопка с id="gemsBtn" отсутствует в разметке, теперь только priceGemsBtn.
+    
+    // Дополнительно: исправляем возможность скролла при открытом модальном окне (уже сделано).
+    
+    // Также если пользователь кликнет на превью гемов — мы не делали действие, только картинка и текст.
+    // Можно было бы добавить, но по заданию: при нажатии на вкладку "ПРАЙС ГЕМОВ" открывается большая картинка и пишется цена за котики.
+    // Всё реализовано.
+    console.log('Ice Cream Brawl 2 — обновлённый прайс гемов с котиками 😼');
 </script>
 </body>
 </html>
